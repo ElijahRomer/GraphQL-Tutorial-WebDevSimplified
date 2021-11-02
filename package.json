@@ -2,9 +2,10 @@
   "name": "graphql-tutorial-webdevsimplified",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node server.js",
+    "devStart": "nodemon server.js"
   },
   "repository": {
     "type": "git",
@@ -16,6 +17,9 @@
     "url": "https://github.com/ElijahRomer/GraphQL-Tutorial-WebDevSimplified/issues"
   },
   "homepage": "https://github.com/ElijahRomer/GraphQL-Tutorial-WebDevSimplified#readme",
+  "devDependencies": {
+    "nodemon": "^2.0.14"
+  },
   "dependencies": {
     "express": "^4.17.1",
     "express-graphql": "^0.12.0",
