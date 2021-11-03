@@ -1,11 +1,19 @@
 const express = require(`express`);
 const { graphqlHTTP } = require('express-graphql');
 const {
+  // gets passed an object that has properties defining the type of queries you can perform. Example: query, mutation.
   GraphQLSchema,
+
+  //design your own data type in a sense... or like a table. Like a schema for a table
   GraphQLObjectType,
+
+  // specifies multiple entries will be returned
   GraphQLList,
-  // states that you can never return a null value for this type
+
+  // states that you can never return a null value for this type- pass another type for it's parameter
   GraphQLNonNull,
+
+  // conventional data types.
   GraphQLString,
   GraphQLInt,
 } = require(`graphql`);
@@ -17,29 +25,10 @@ const data = require(`./data`);
 // import dummy data (mock database)
 const { authors, books } = require(`./data`);
 
-// added object collapse lines in the IDE
-{
-  // // defines query section
-  // const schema = new GraphQLSchema({
-  //   // defines all of the use cases for querying- right now it is just a single hello-world object, but multiple objects represent multiple use cases.
-  //   query: new GraphQLObjectType({
-  //     name: 'HelloWorld',
-  //     // inside of each object there is a fields property that represent all the different sections of that object that we can return data from.
-  //     fields: () => ({
-  //       message: {
-  //         type: GraphQLString,
-  //         // what actual information are we returning from this field. How do we actually get the info for this field and return it.
-  //         // resolve function can also take a couple arguments, such as parent, and args
-  //         resolve: () => 'Hello World',
-  //       },
-  //     }),
-  //   }),
-  // });
-}
-
 const AuthorType = new GraphQLObjectType({
   name: 'Author',
   description: 'This represents an author of a book',
+  // fields is set to a function returning an object because if it just returns the object, then there are issues with order of definition and trying to access the fields obj without it being defined yet in the script. setting the value to a function that returns the value eliminates this issue.
   fields: () => ({
     id: { type: new GraphQLNonNull(GraphQLInt) },
     name: { type: new GraphQLNonNull(GraphQLString) },
@@ -61,7 +50,7 @@ const BookType = new GraphQLObjectType({
     authorId: { type: new GraphQLNonNull(GraphQLInt) },
     author: {
       type: AuthorType,
-      // remember that the resolve takes in it's parent as an argument
+      // remember that the resolve takes in it's parent as the first argument
       resolve: (book) => {
         return authors.find((author) => author.id === book.authorId);
       },
@@ -144,6 +133,7 @@ const RootMutationType = new GraphQLObjectType({
   }),
 });
 
+// defines the types of interactions we can make with the database... the types are defined via the objectType graphql class
 const schema = new GraphQLSchema({
   query: RootQueryType,
   mutation: RootMutationType,
